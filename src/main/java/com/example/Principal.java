@@ -1,0 +1,78 @@
+package com.example;
+
+import javax.swing.*;
+import org.hibernate.*;
+import org.hibernate.cfg.Configuration;
+
+/**
+ * Clase principal del proyecto Dragolandia.
+ * @author Samuel.
+ */
+public class Principal {
+
+    static Session sessionFactory = null;
+
+    /** 
+     * @param args
+     */
+    public static void main(String[] args) {
+
+        try (SessionFactory factory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory()) {
+            SwingUtilities.invokeLater(() -> {
+                Vista vista = new Vista();
+                vista.setVisible(true);
+            });
+        } catch (Exception e) {
+            System.out.println("Error inicializando: " + e.getMessage());
+        }
+
+    }
+
+    /**
+     * Guarda un objeto en la base de datos.
+     */
+    public static <T> void guardarObjeto(T objeto) {
+        Transaction tx = null;
+
+        try (Session session = ((SessionFactory) sessionFactory).openSession()) {
+            tx = session.beginTransaction();
+            session.persist(objeto);
+            tx.commit();
+            System.out.println("Objeto guardado correctamente en BD.");
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            System.err.println("Error al guardar: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Simula la partida de Dragolandia.
+     */
+    public static String simularPartida() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("=== COMIENZA LA PARTIDA ===\n\n");
+
+        Mago mago = new Mago(1, "Merlín", 100, 25);
+        Monstruo ogro = new Monstruo(1, "Ogro Verde", 80, Monstruo.Tipo.OGRO);
+        Hechizo bolaFuego = new Hechizo("Bola de fuego", 10);
+
+        sb.append(mago.toString()).append("\n");
+
+        mago.lanzarHechizo(ogro, bolaFuego);
+        sb.append("El mago lanza Bola de fuego.\n");
+        sb.append("Vida del ogro: ").append(ogro.getVida()).append("\n\n");
+
+        ogro.atacar(mago);
+        sb.append("El ogro ataca al mago.\n");
+        sb.append("Vida del mago: ").append(mago.getVida()).append("\n\n");
+
+        guardarObjeto(mago);
+        guardarObjeto(ogro);
+
+        sb.append("Datos guardados en la base de datos.\n");
+        sb.append("=== FIN DE LA PARTIDA ===\n");
+
+        return sb.toString();
+    }
+}
