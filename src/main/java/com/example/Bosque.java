@@ -12,14 +12,20 @@ import jakarta.persistence.*;
 public class Bosque {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int id;
     public String nombre;
     public int nivelPeligro;
+
+    @OneToOne
     public Monstruo monstruoJefe;
-    public ArrayList<Monstruo> monstruos;
+
+    @OneToMany
+    public static ArrayList<Monstruo> monstruos;
     
-    public Bosque(int id, String nombre, int nivelPeligro, Monstruo monstruoJefe) {
-        this.id = id;
+    public Bosque() {}
+
+    public Bosque(String nombre, int nivelPeligro, Monstruo monstruoJefe) {
         this.nombre = nombre;
         this.nivelPeligro = nivelPeligro;
         this.monstruoJefe = monstruoJefe;
@@ -108,14 +114,10 @@ public class Bosque {
     }
 
     /** 
-     * Método par añadir un monstruo al bosque.
+     * Método para añadir un monstruo al bosque.
      * @param m
      */
     public void addMonstruo(Monstruo m) {
         monstruos.add(m);
     }
-
-
-    @OneToMany
-    private Monstruo monstruo;
 }

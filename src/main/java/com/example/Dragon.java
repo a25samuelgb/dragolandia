@@ -11,10 +11,17 @@ import jakarta.persistence.*;
 public class Dragon {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public int id;
     public String nombre;
     public int intensidadFuego;
     public int vida;
+
+    @ManyToOne
+    private Bosque bosque;
     
+    public Dragon() {}
+
     public Dragon(String nombre, int intensidadFuego, int vida) {
         this.nombre = nombre;
         this.intensidadFuego = intensidadFuego;
@@ -79,8 +86,4 @@ public class Dragon {
     public void exhalar(Monstruo m){
         m.vida -= getIntensidadFuego();
     }
-
-
-    @ManyToOne
-    private Bosque bosque;
 }

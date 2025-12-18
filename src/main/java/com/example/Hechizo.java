@@ -11,9 +11,13 @@ import jakarta.persistence.*;
 public class Hechizo {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public int id;
     public String nombre;
     public int danho;
     
+    public Hechizo() {}
+
     public Hechizo(String nombre, int danho) {
         this.nombre = nombre;
         this.danho = danho;

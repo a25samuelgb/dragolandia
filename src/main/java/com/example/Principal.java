@@ -23,7 +23,7 @@ public class Principal {
                 vista.setVisible(true);
             });
         } catch (Exception e) {
-            System.out.println("Error inicializando: " + e.getMessage());
+            e.printStackTrace();
         }
 
     }
@@ -53,8 +53,8 @@ public class Principal {
 
         sb.append("=== COMIENZA LA PARTIDA ===\n\n");
 
-        Mago mago = new Mago(1, "Merlín", 100, 25);
-        Monstruo ogro = new Monstruo(1, "Ogro Verde", 80, Monstruo.Tipo.OGRO);
+        Mago mago = new Mago("Merlín", 100, 25);
+        Monstruo ogro = new Monstruo("Manolo", 80, Monstruo.Tipo.OGRO);
         Hechizo bolaFuego = new Hechizo("Bola de fuego", 10);
 
         sb.append(mago.toString()).append("\n");

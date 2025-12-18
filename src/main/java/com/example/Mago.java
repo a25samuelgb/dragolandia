@@ -11,6 +11,7 @@ import jakarta.persistence.*;
 public class Mago {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int id;
     public String nombre;
     public int vida;
@@ -22,8 +23,9 @@ public class Mago {
         new Hechizo("Carga de energía", 5)
     };
     
-    public Mago(int id, String nombre, int vida, int nivelMagia) {
-        this.id = id;
+    public Mago() {}
+
+    public Mago(String nombre, int vida, int nivelMagia) {
         this.nombre = nombre;
         this.vida = vida;
         this.nivelMagia = nivelMagia;
@@ -112,9 +114,19 @@ public class Mago {
         boolean restar = true;
 
         for (int i = 0; i < conjuros.length; i++) {
-            if (h.getNombre() == conjuros[i].getNombre()) {
-                m.vida -= h.getDanho();
-                System.out.println(getNombre() + " atacó a " + m.getNombre() + " con " + h.getNombre() + ".");
+            if (h.getNombre().equals(conjuros[i].getNombre())) {
+
+                if (h.getNombre().equals("Bola de nieve")) {
+                    m.vida = 0;
+                }else if (h.getNombre().equals("Bola de fuego")) {
+                    for (Monstruo monstruo : Bosque.monstruos) {
+                        monstruo.vida -= h.getDanho();
+                    }
+                }else{
+                    m.vida -= h.getDanho();
+                }
+
+                System.out.println(getNombre() + " atacó a " + m.getNombre() + " con " + h.getNombre().toLowerCase() + ".");
                 restar = false;
             }
         }

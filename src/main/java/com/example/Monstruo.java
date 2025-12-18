@@ -11,6 +11,7 @@ import jakarta.persistence.*;
 public class Monstruo {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int id;
     public String nombre;
     public int vida;
@@ -22,22 +23,24 @@ public class Monstruo {
     public Tipo tipo;
     public int fuerza;
 
-    public Monstruo(int id, String nombre, int vida, Tipo tipo) {
-        this.id = id;
+    public Monstruo() {}
+
+    public Monstruo(String nombre, int vida, Tipo tipo) {
         this.nombre = nombre;
         this.vida = vida;
         this.tipo = tipo;
         switch (tipo) {
             case OGRO:
-                this.fuerza = 30;
+                fuerza = 30;
                 break;
             case TROLL:
-                this.fuerza = 15;
+                fuerza = 15;
                 break;
             case ESPECTRO:
-                this.fuerza = 20;
+                fuerza = 20;
                 break;
             default:
+                fuerza = 1;
                 break;
         }
     }
@@ -117,7 +120,7 @@ public class Monstruo {
      */
     @Override
     public String toString() {
-        return "Monstruo " + getId() + ".\nNombre: " + getNombre() + ".\nTipo: " + getTipo() 
+        return "Monstruo " + getId() + ".\nNombre: " + getNombre() + ".\nTipo: " + getTipo()
             + ".\nPuntos de vida: " + getVida() + ".\nPuntos de fuerza: " + getFuerza() + ".";
     }
 
