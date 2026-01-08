@@ -40,7 +40,7 @@ public class Monstruo {
                 fuerza = 20;
                 break;
             default:
-                fuerza = 1;
+                fuerza = 0;
                 break;
         }
     }

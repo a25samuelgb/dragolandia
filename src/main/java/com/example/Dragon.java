@@ -17,7 +17,7 @@ public class Dragon {
     public int intensidadFuego;
     public int vida;
 
-    @ManyToOne
+    @OneToOne
     private Bosque bosque;
     
     public Dragon() {}
