@@ -1,18 +1,21 @@
-package com.example;
+package com.example.View;
 
 import javax.swing.*;
+
+import com.example.Principal;
+
 import java.awt.*;
 
 /**
  * Vista sencilla del juego Dragolandia.
  * @author Samuel.
  */
-public class Vista extends JFrame {
+public class VistaDragolandia extends JFrame {
 
     private JTextArea areaTexto;
     private JButton botonIniciar;
 
-    public Vista() {
+    public VistaDragolandia() {
         setTitle("Dragolandia");
         setSize(500, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

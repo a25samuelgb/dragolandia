@@ -4,6 +4,9 @@ import javax.swing.*;
 import org.hibernate.*;
 import org.hibernate.cfg.Configuration;
 
+import com.example.Model.*;
+import com.example.View.VistaDragolandia;
+
 /**
  * Clase principal del proyecto Dragolandia.
  * @author Samuel.
@@ -19,30 +22,13 @@ public class Principal {
 
         try (SessionFactory factory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory()) {
             SwingUtilities.invokeLater(() -> {
-                Vista vista = new Vista();
+                VistaDragolandia vista = new VistaDragolandia();
                 vista.setVisible(true);
             });
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-    }
-
-    /**
-     * Guarda un objeto en la base de datos.
-     */
-    public static <T> void guardarObjeto(T objeto) {
-        Transaction tx = null;
-
-        try (Session session = ((SessionFactory) sessionFactory).openSession()) {
-            tx = session.beginTransaction();
-            session.persist(objeto);
-            tx.commit();
-            System.out.println("Objeto guardado correctamente en BD.");
-        } catch (Exception e) {
-            if (tx != null) tx.rollback();
-            System.err.println("Error al guardar: " + e.getMessage());
-        }
     }
 
     /**

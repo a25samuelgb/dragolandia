@@ -1,4 +1,4 @@
-package com.example;
+package com.example.Model;
 
 import jakarta.persistence.*;
 
@@ -77,7 +77,11 @@ public class Mago {
      * @param vida
      */
     public void setVida(int vida) {
-        this.vida = vida;
+        if (vida < 0) {
+            this.vida = 0;
+        }else{
+            this.vida = vida;
+        }
     }
 
     /** 
