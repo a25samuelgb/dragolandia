@@ -1,4 +1,4 @@
-package com.example.Model;
+package com.example.model;
 
 import jakarta.persistence.*;
 
@@ -119,7 +119,6 @@ public class Mago {
 
         for (int i = 0; i < conjuros.length; i++) {
             if (h.getNombre().equals(conjuros[i].getNombre())) {
-
                 if (h.getNombre().equals("Bola de nieve")) {
                     m.vida = 0;
                 }else if (h.getNombre().equals("Bola de fuego")) {

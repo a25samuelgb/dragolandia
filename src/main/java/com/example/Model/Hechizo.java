@@ -1,4 +1,4 @@
-package com.example.Model;
+package com.example.model;
 
 import jakarta.persistence.*;
 
@@ -13,6 +13,7 @@ public class Hechizo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int id;
+
     public String nombre;
     public int danho;
     
@@ -21,6 +22,13 @@ public class Hechizo {
     public Hechizo(String nombre, int danho) {
         this.nombre = nombre;
         this.danho = danho;
+    }
+
+    /**
+     * @return int
+     */
+    public int getId() {
+        return id;
     }
 
     /** 
@@ -35,6 +43,13 @@ public class Hechizo {
      */
     public int getDanho() {
         return danho;
+    }
+
+    /**
+     * @param id
+     */
+    public void setId(int id) {
+        this.id = id;
     }
 
     /** 

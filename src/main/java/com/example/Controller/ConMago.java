@@ -1,26 +1,29 @@
-package com.example.Controller;
+package com.example.controller;
 
-import org.hibernate.*;
+import com.example.model.*;
 
-import com.example.Model.*;
+import jakarta.persistence.*;
 
 public class ConMago {
 
-    static Session sessionFactory = null;
+    private static EntityManager gestorEntidades;
+    private static EntityTransaction gestorTransaction;
+
+    public ConMago() {
+        gestorEntidades = EmFactory.getEntityManager();
+        gestorTransaction = gestorEntidades.getTransaction();
+    }
 
     /**
      * Guarda un mago en la base de datos.
      */
-    public static <T> void guardar(Mago m) {
-        Transaction tx = null;
-
-        try (Session session = ((SessionFactory) sessionFactory).openSession()) {
-            tx = session.beginTransaction();
-            session.persist(m);
-            tx.commit();
+    public static void guardar(Mago m) {
+        try {
+            gestorTransaction.begin();
+            gestorEntidades.persist(m);
+            gestorTransaction.commit();
             System.out.println("Mago guardado correctamente en la BD.");
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
             System.err.println("Error al guardar: " + e.getMessage());
         }
     }
@@ -28,16 +31,13 @@ public class ConMago {
     /**
      * Elimina un mago de la base de datos.
      */
-    public static <T> void eliminar(Mago m) {
-        Transaction tx = null;
-
-        try (Session session = ((SessionFactory) sessionFactory).openSession()) {
-            tx = session.beginTransaction();
-            session.remove(m);
-            tx.commit();
+    public static void eliminar(Mago m) {
+        try {
+            gestorTransaction.begin();
+            gestorEntidades.remove(m);
+            gestorTransaction.commit();
             System.out.println("Mago eliminado correctamente de la BD.");
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
             System.err.println("Error al eliminar: " + e.getMessage());
         }
     }
@@ -45,17 +45,14 @@ public class ConMago {
     /**
      * Modifica la vida de un mago de la base de datos.
      */
-    public static <T> void modificarVida(Mago m, int vida) {
-        Transaction tx = null;
-
-        try (Session session = ((SessionFactory) sessionFactory).openSession()) {
-            tx = session.beginTransaction();
-            m = session.find(Mago.class, session);
+    public static void modificarVida(Mago m, int vida) {
+        try {
+            gestorTransaction.begin();
+            m = gestorEntidades.find(Mago.class, m.getId());
             m.setVida(vida);
-            tx.commit();
-            System.out.println("Mago modificado correctamente en la BD.");
+            gestorTransaction.commit();
+            System.out.println("Vida del mago modificada correctamente en la BD.");
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
             System.err.println("Error al modificar: " + e.getMessage());
         }
     }
@@ -63,13 +60,8 @@ public class ConMago {
     /**
      * Muestra un mago de la base de datos.
      */
-    public static <T> void mostrar(Mago m) {
-        try (Session session = ((SessionFactory) sessionFactory).openSession()) {
-            m = session.find(Mago.class, session);
-            m.toString();
-        } catch (Exception e) {
-            System.err.println("Error al mostrar: " + e.getMessage());
-        }
+    public static Mago mostrar(Mago m) {
+        return gestorEntidades.find(Mago.class, m.getId());
     }
 
 }

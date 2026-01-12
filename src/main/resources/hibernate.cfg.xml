@@ -18,11 +18,11 @@
         <property name="hibernate.current_session_context_class">thread</property>
         
         <!-- Registrar entidades -->
-        <mapping class="com.example.Monstruo"/>
-        <mapping class="com.example.Bosque"/>
-        <mapping class="com.example.Dragon"/>
-        <mapping class="com.example.Hechizo"/>
-        <mapping class="com.example.Mago"/>
-        <mapping class="com.example.Conjuro"/>
+        <mapping class="com.example.model.Monstruo"/>
+        <mapping class="com.example.model.Bosque"/>
+        <mapping class="com.example.model.Dragon"/>
+        <mapping class="com.example.model.Hechizo"/>
+        <mapping class="com.example.model.Mago"/>
+        <mapping class="com.example.model.Conjuro"/>
     </session-factory>
 </hibernate-configuration>

@@ -1,26 +1,29 @@
-package com.example.Controller;
+package com.example.controller;
 
-import org.hibernate.*;
+import com.example.model.*;
 
-import com.example.Model.*;
+import jakarta.persistence.*;
 
 public class ConConjuro {
 
-    static Session sessionFactory = null;
+    private static EntityManager gestorEntidades;
+    private static EntityTransaction gestorTransaction;
+
+    public ConConjuro() {
+        gestorEntidades = EmFactory.getEntityManager();
+        gestorTransaction = gestorEntidades.getTransaction();
+    }
 
     /**
      * Guarda un conjuro en la base de datos.
      */
-    public static <T> void guardar(Conjuro c) {
-        Transaction tx = null;
-
-        try (Session session = ((SessionFactory) sessionFactory).openSession()) {
-            tx = session.beginTransaction();
-            session.persist(c);
-            tx.commit();
+    public static void guardar(Conjuro c) {
+        try {
+            gestorTransaction.begin();
+            gestorEntidades.persist(c);
+            gestorTransaction.commit();
             System.out.println("Conjuro guardado correctamente en la BD.");
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
             System.err.println("Error al guardar: " + e.getMessage());
         }
     }
@@ -28,16 +31,14 @@ public class ConConjuro {
     /**
      * Elimina un conjuro de la base de datos.
      */
-    public static <T> void eliminar(Conjuro c) {
-        Transaction tx = null;
-
-        try (Session session = ((SessionFactory) sessionFactory).openSession()) {
-            tx = session.beginTransaction();
-            session.remove(c);
-            tx.commit();
+    public static void eliminar(Conjuro c) {
+        try {
+            gestorTransaction.begin();
+            c = gestorEntidades.find(Conjuro.class, c.getId());
+            gestorEntidades.remove(c);
+            gestorTransaction.commit();
             System.out.println("Conjuro eliminado correctamente de la BD.");
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
             System.err.println("Error al eliminar: " + e.getMessage());
         }
     }
@@ -45,17 +46,14 @@ public class ConConjuro {
     /**
      * Modifica el hechizo de un conjuro de la base de datos.
      */
-    public static <T> void modificarHechizo(Conjuro c, Hechizo h) {
-        Transaction tx = null;
-
-        try (Session session = ((SessionFactory) sessionFactory).openSession()) {
-            tx = session.beginTransaction();
-            c = session.find(Conjuro.class, session);
+    public static void modificarHechizo(Conjuro c, Hechizo h) {
+        try {
+            gestorTransaction.begin();
+            c = gestorEntidades.find(Conjuro.class, c.getId());
             c.setHechizo(h);
-            tx.commit();
-            System.out.println("Objeto modificado correctamente en la BD.");
+            gestorTransaction.commit();
+            System.out.println("Hechizo del conjuro modificado correctamente en la BD.");
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
             System.err.println("Error al modificar: " + e.getMessage());
         }
     }
@@ -63,13 +61,8 @@ public class ConConjuro {
     /**
      * Muestra un conjuro de la base de datos.
      */
-    public static <T> void mostrar(Conjuro c) {
-        try (Session session = ((SessionFactory) sessionFactory).openSession()) {
-            c = session.find(Conjuro.class, session);
-            c.toString();
-        } catch (Exception e) {
-            System.err.println("Error al mostrar: " + e.getMessage());
-        }
+    public static Bosque mostrar(Bosque b) {
+        return gestorEntidades.find(Bosque.class, b.getId());
     }
 
 }

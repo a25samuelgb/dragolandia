@@ -1,7 +1,17 @@
-package com.example.Model;
+package com.example.model;
 
+import jakarta.persistence.*;
+
+/**
+ * Clase Bosque.
+ * @author Samuel
+ */
+@Entity
+@Table(name = "conjuro")
 public class Conjuro {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int id;
     public Mago mago;
     public Hechizo hechizo;

@@ -1,4 +1,4 @@
-package com.example.Model;
+package com.example.model;
 
 import jakarta.persistence.*;
 
@@ -28,6 +28,14 @@ public class Dragon {
         this.vida = vida;
     }
 
+
+    /**
+     * @return int
+     */
+    public int getId() {
+        return id;
+    }
+
     /** 
      * @return String
      */
@@ -47,6 +55,13 @@ public class Dragon {
      */
     public int getVida() {
         return vida;
+    }
+
+    /**
+     * @param id
+     */
+    public void setId(int id) {
+        this.id = id;
     }
 
     /** 

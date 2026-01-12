@@ -4,8 +4,9 @@ import javax.swing.*;
 import org.hibernate.*;
 import org.hibernate.cfg.Configuration;
 
-import com.example.Model.*;
-import com.example.View.VistaDragolandia;
+import com.example.controller.*;
+import com.example.model.*;
+import com.example.view.VistaDragolandia;
 
 /**
  * Clase principal del proyecto Dragolandia.
@@ -53,8 +54,8 @@ public class Principal {
         sb.append("El ogro ataca al mago.\n");
         sb.append("Vida del mago: ").append(mago.getVida()).append("\n\n");
 
-        guardarObjeto(mago);
-        guardarObjeto(ogro);
+        ConMago.guardar(mago);
+        ConMonstruo.guardar(ogro);
 
         sb.append("Datos guardados en la base de datos.\n");
         sb.append("=== FIN DE LA PARTIDA ===\n");

@@ -1,26 +1,29 @@
-package com.example.Controller;
+package com.example.controller;
 
-import org.hibernate.*;
+import com.example.model.*;
 
-import com.example.Model.*;
+import jakarta.persistence.*;
 
 public class ConMonstruo {
 
-    static Session sessionFactory = null;
+    private static EntityManager gestorEntidades;
+    private static EntityTransaction gestorTransaction;
+
+    public ConMonstruo() {
+        gestorEntidades = EmFactory.getEntityManager();
+        gestorTransaction = gestorEntidades.getTransaction();
+    }
 
     /**
      * Guarda un monstruo en la base de datos.
      */
-    public static <T> void guardar(Monstruo m) {
-        Transaction tx = null;
-
-        try (Session session = ((SessionFactory) sessionFactory).openSession()) {
-            tx = session.beginTransaction();
-            session.persist(m);
-            tx.commit();
+    public static void guardar(Monstruo m) {
+        try {
+            gestorTransaction.begin();
+            gestorEntidades.persist(m);
+            gestorTransaction.commit();
             System.out.println("Monstruo guardado correctamente en la BD.");
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
             System.err.println("Error al guardar: " + e.getMessage());
         }
     }
@@ -29,15 +32,12 @@ public class ConMonstruo {
      * Elimina un monstruo de la base de datos.
      */
     public static <T> void eliminar(Monstruo m) {
-        Transaction tx = null;
-
-        try (Session session = ((SessionFactory) sessionFactory).openSession()) {
-            tx = session.beginTransaction();
-            session.remove(m);
-            tx.commit();
+        try {
+            gestorTransaction.begin();
+            gestorEntidades.persist(m);
+            gestorTransaction.commit();
             System.out.println("Monstruo eliminado correctamente de la BD.");
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
             System.err.println("Error al eliminar: " + e.getMessage());
         }
     }
@@ -46,16 +46,13 @@ public class ConMonstruo {
      * Modifica la vida de un monstruo de la base de datos.
      */
     public static <T> void modificarVida(Monstruo m, int vida) {
-        Transaction tx = null;
-
-        try (Session session = ((SessionFactory) sessionFactory).openSession()) {
-            tx = session.beginTransaction();
-            m = session.find(Monstruo.class, session);
+        try {
+            gestorTransaction.begin();
+            m = gestorEntidades.find(Monstruo.class, m.getId());
             m.setVida(vida);
-            tx.commit();
-            System.out.println("Monstruo modificado correctamente en la BD.");
+            gestorTransaction.commit();
+            System.out.println("Vida del monstruo modificada correctamente en la BD.");
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
             System.err.println("Error al modificar: " + e.getMessage());
         }
     }
@@ -63,13 +60,8 @@ public class ConMonstruo {
     /**
      * Muestra un monstruo de la base de datos.
      */
-    public static <T> void mostrar(Monstruo m) {
-        try (Session session = ((SessionFactory) sessionFactory).openSession()) {
-            m = session.find(Monstruo.class, session);
-            m.toString();
-        } catch (Exception e) {
-            System.err.println("Error al mostrar: " + e.getMessage());
-        }
+    public static Monstruo mostrar(Monstruo m) {
+        return gestorEntidades.find(Monstruo.class, m.getId());
     }
 
 }

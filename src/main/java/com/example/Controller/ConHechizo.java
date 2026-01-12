@@ -1,26 +1,29 @@
-package com.example.Controller;
+package com.example.controller;
 
-import org.hibernate.*;
+import com.example.model.*;
 
-import com.example.Model.*;
+import jakarta.persistence.*;
 
 public class ConHechizo {
 
-    static Session sessionFactory = null;
+    private static EntityManager gestorEntidades;
+    private static EntityTransaction gestorTransaction;
+
+    public ConHechizo() {
+        gestorEntidades = EmFactory.getEntityManager();
+        gestorTransaction = gestorEntidades.getTransaction();
+    }
 
     /**
      * Guarda un hechizo en la base de datos.
      */
-    public static <T> void guardar(Hechizo h) {
-        Transaction tx = null;
-
-        try (Session session = ((SessionFactory) sessionFactory).openSession()) {
-            tx = session.beginTransaction();
-            session.persist(h);
-            tx.commit();
+    public static void guardar(Hechizo h) {
+        try {
+            gestorTransaction.begin();
+            gestorEntidades.persist(h);
+            gestorTransaction.commit();
             System.out.println("Hechizo guardado correctamente en la BD.");
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
             System.err.println("Error al guardar: " + e.getMessage());
         }
     }
@@ -28,16 +31,13 @@ public class ConHechizo {
     /**
      * Elimina un hechizo de la base de datos.
      */
-    public static <T> void eliminar(Hechizo h) {
-        Transaction tx = null;
-
-        try (Session session = ((SessionFactory) sessionFactory).openSession()) {
-            tx = session.beginTransaction();
-            session.remove(h);
-            tx.commit();
+    public static void eliminar(Hechizo h) {
+        try {
+            gestorTransaction.begin();
+            gestorEntidades.remove(h);
+            gestorTransaction.commit();
             System.out.println("Hechizo eliminado correctamente de la BD.");
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
             System.err.println("Error al eliminar: " + e.getMessage());
         }
     }
@@ -45,17 +45,14 @@ public class ConHechizo {
     /**
      * Modifica el daño de un hechizo de la base de datos.
      */
-    public static <T> void modificarVida(Hechizo h, int danho) {
-        Transaction tx = null;
-
-        try (Session session = ((SessionFactory) sessionFactory).openSession()) {
-            tx = session.beginTransaction();
-            h = session.find(Hechizo.class, session);
+    public static void modificarVida(Hechizo h, int danho) {
+        try {
+            gestorTransaction.begin();
+            h = gestorEntidades.find(Hechizo.class, h.getId());
             h.setDanho(danho);
-            tx.commit();
-            System.out.println("Dragón modificado correctamente en la BD.");
+            gestorTransaction.commit();
+            System.out.println("Daño del hechizo modificado correctamente en la BD.");
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
             System.err.println("Error al modificar: " + e.getMessage());
         }
     }
@@ -63,13 +60,8 @@ public class ConHechizo {
     /**
      * Muestra un hechizo de la base de datos.
      */
-    public static <T> void mostrar(Hechizo h) {
-        try (Session session = ((SessionFactory) sessionFactory).openSession()) {
-            h = session.find(Hechizo.class, session);
-            h.toString();
-        } catch (Exception e) {
-            System.err.println("Error al mostrar: " + e.getMessage());
-        }
+    public static Hechizo mostrar(Hechizo h) {
+        return gestorEntidades.find(Hechizo.class, h.getId());
     }
 
 }

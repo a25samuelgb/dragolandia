@@ -1,26 +1,29 @@
-package com.example.Controller;
+package com.example.controller;
 
-import org.hibernate.*;
+import com.example.model.*;
 
-import com.example.Model.*;
+import jakarta.persistence.*;
 
 public class ConDragon {
 
-    static Session sessionFactory = null;
+    private static EntityManager gestorEntidades;
+    private static EntityTransaction gestorTransaction;
+
+    public ConDragon() {
+        gestorEntidades = EmFactory.getEntityManager();
+        gestorTransaction = gestorEntidades.getTransaction();
+    }
 
     /**
      * Guarda un dragón en la base de datos.
      */
-    public static <T> void guardar(Dragon d) {
-        Transaction tx = null;
-
-        try (Session session = ((SessionFactory) sessionFactory).openSession()) {
-            tx = session.beginTransaction();
-            session.persist(d);
-            tx.commit();
+    public static void guardar(Dragon d) {
+        try {
+            gestorTransaction.begin();
+            gestorEntidades.persist(d);
+            gestorTransaction.commit();
             System.out.println("Dragón guardado correctamente en la BD.");
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
             System.err.println("Error al guardar: " + e.getMessage());
         }
     }
@@ -28,16 +31,14 @@ public class ConDragon {
     /**
      * Elimina un dragón de la base de datos.
      */
-    public static <T> void eliminar(Dragon d) {
-        Transaction tx = null;
-
-        try (Session session = ((SessionFactory) sessionFactory).openSession()) {
-            tx = session.beginTransaction();
-            session.remove(d);
-            tx.commit();
+    public static void eliminar(Dragon d) {
+        try {
+            gestorTransaction.begin();
+            d = gestorEntidades.find(Dragon.class, d);
+            gestorEntidades.remove(d);
+            gestorTransaction.commit();
             System.out.println("Dragón eliminado correctamente de la BD.");
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
             System.err.println("Error al eliminar: " + e.getMessage());
         }
     }
@@ -45,17 +46,14 @@ public class ConDragon {
     /**
      * Modifica la vida de un dragón de la base de datos.
      */
-    public static <T> void modificarVida(Dragon d, int vida) {
-        Transaction tx = null;
-
-        try (Session session = ((SessionFactory) sessionFactory).openSession()) {
-            tx = session.beginTransaction();
-            d = session.find(Dragon.class, session);
+    public static void modificarVida(Dragon d, int vida) {
+        try {
+            gestorTransaction.begin();
+            d = gestorEntidades.find(Dragon.class, d);
             d.setVida(vida);
-            tx.commit();
-            System.out.println("Dragón modificado correctamente en la BD.");
+            gestorTransaction.commit();
+            System.out.println("Vida del dragón modificada correctamente en la BD.");
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
             System.err.println("Error al modificar: " + e.getMessage());
         }
     }
@@ -63,13 +61,8 @@ public class ConDragon {
     /**
      * Muestra un dragón de la base de datos.
      */
-    public static <T> void mostrar(Dragon d) {
-        try (Session session = ((SessionFactory) sessionFactory).openSession()) {
-            d = session.find(Dragon.class, session);
-            d.toString();
-        } catch (Exception e) {
-            System.err.println("Error al mostrar: " + e.getMessage());
-        }
+    public static Dragon mostrar(Dragon d) {
+        return gestorEntidades.find(Dragon.class, d.getId());
     }
 
 }

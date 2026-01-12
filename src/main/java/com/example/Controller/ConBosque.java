@@ -1,26 +1,29 @@
-package com.example.Controller;
+package com.example.controller;
 
-import org.hibernate.*;
+import com.example.model.*;
 
-import com.example.Model.*;
+import jakarta.persistence.*;
 
 public class ConBosque {
 
-    static Session sessionFactory = null;
+    private static EntityManager gestorEntidades;
+    private static EntityTransaction gestorTransaction;
+
+    public ConBosque() {
+        gestorEntidades = EmFactory.getEntityManager();
+        gestorTransaction = gestorEntidades.getTransaction();
+    }
 
     /**
      * Guarda un bosque en la base de datos.
      */
-    public static <T> void guardar(Bosque b) {
-        Transaction tx = null;
-
-        try (Session session = ((SessionFactory) sessionFactory).openSession()) {
-            tx = session.beginTransaction();
-            session.persist(b);
-            tx.commit();
-            System.out.println("Objeto guardado correctamente en la BD.");
+    public static void guardar(Bosque b) {
+        try {
+            gestorTransaction.begin();
+            gestorEntidades.persist(b);
+            gestorTransaction.commit();
+            System.out.println("Bosque guardado correctamente en la BD.");
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
             System.err.println("Error al guardar: " + e.getMessage());
         }
     }
@@ -28,16 +31,14 @@ public class ConBosque {
     /**
      * Elimina un bosque de la base de datos.
      */
-    public static <T> void eliminar(Bosque b) {
-        Transaction tx = null;
-
-        try (Session session = ((SessionFactory) sessionFactory).openSession()) {
-            tx = session.beginTransaction();
-            session.remove(b);
-            tx.commit();
-            System.out.println("Objeto eliminado correctamente de la BD.");
+    public static void eliminar(Bosque b) {
+        try {
+            gestorTransaction.begin();
+            b = gestorEntidades.find(Bosque.class, b.getId());
+            gestorEntidades.remove(b);
+            gestorTransaction.commit();
+            System.out.println("Bosque eliminado correctamente de la BD.");
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
             System.err.println("Error al eliminar: " + e.getMessage());
         }
     }
@@ -45,17 +46,14 @@ public class ConBosque {
     /**
      * Modifica un el monstruo jefe de un bosque de la base de datos.
      */
-    public static <T> void modificarJefe(Bosque b, Monstruo m) {
-        Transaction tx = null;
-
-        try (Session session = ((SessionFactory) sessionFactory).openSession()) {
-            tx = session.beginTransaction();
-            b = session.find(Bosque.class, session);
+    public static void modificarJefe(Bosque b, Monstruo m) {
+        try {
+            gestorTransaction.begin();
+            b = gestorEntidades.find(Bosque.class, b.getId());
             b.setMonstruoJefe(m);
-            tx.commit();
-            System.out.println("Objeto modificado correctamente en la BD.");
+            gestorTransaction.commit();
+            System.out.println("Monstruo jefe del bosque modificado correctamente en la BD.");
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
             System.err.println("Error al modificar: " + e.getMessage());
         }
     }
@@ -63,13 +61,8 @@ public class ConBosque {
     /**
      * Muestra un bosque de la base de datos.
      */
-    public static <T> void mostrar(Bosque b) {
-        try (Session session = ((SessionFactory) sessionFactory).openSession()) {
-            b = session.find(Bosque.class, session);
-            b.toString();
-        } catch (Exception e) {
-            System.err.println("Error al mostrar: " + e.getMessage());
-        }
+    public static Bosque mostrar(Bosque b) {
+        return gestorEntidades.find(Bosque.class, b.getId());
     }
 
 }
