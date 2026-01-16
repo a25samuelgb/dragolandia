@@ -1,5 +1,10 @@
 package com.example.model;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+
+import com.example.controller.ConMonstruo;
+
 import jakarta.persistence.*;
 
 /**
@@ -8,7 +13,7 @@ import jakarta.persistence.*;
  */
 @Entity
 @Table(name = "mago")
-public class Mago {
+public class Mago implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,12 +21,7 @@ public class Mago {
     public String nombre;
     public int vida;
     public int nivelMagia;
-    public Hechizo[] conjuros = {
-        new Hechizo("Bola de fuego", 10),
-        new Hechizo("Rayo", 15),
-        new Hechizo("Bola de nieve", 0),
-        new Hechizo("Carga de energía", 5)
-    };
+    public ArrayList<Hechizo> conjuros;
     
     public Mago() {}
 
@@ -107,6 +107,7 @@ public class Mago {
      */
     public void lanzarHechizo(Monstruo m){
         m.vida -= getNivelMagia();
+        ConMonstruo.modificarVida(m, m.vida);
     }
 
     /** 
@@ -117,16 +118,19 @@ public class Mago {
     public void lanzarHechizo(Monstruo m, Hechizo h){
         boolean restar = true;
 
-        for (int i = 0; i < conjuros.length; i++) {
-            if (h.getNombre().equals(conjuros[i].getNombre())) {
+        for (Hechizo hech : conjuros) {
+            if (h.getNombre().equals(hech.getNombre())) {
                 if (h.getNombre().equals("Bola de nieve")) {
                     m.vida = 0;
+                    ConMonstruo.modificarVida(m, m.vida);
                 }else if (h.getNombre().equals("Bola de fuego")) {
                     for (Monstruo monstruo : Bosque.monstruos) {
                         monstruo.vida -= h.getDanho();
+                        ConMonstruo.modificarVida(monstruo, monstruo.vida);
                     }
                 }else{
                     m.vida -= h.getDanho();
+                    ConMonstruo.modificarVida(m, m.vida);
                 }
 
                 System.out.println(getNombre() + " atacó a " + m.getNombre() + " con " + h.getNombre().toLowerCase() + ".");

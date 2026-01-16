@@ -1,5 +1,7 @@
 package com.example.model;
 
+import java.io.Serializable;
+
 import jakarta.persistence.*;
 
 /**
@@ -8,7 +10,7 @@ import jakarta.persistence.*;
  */
 @Entity
 @Table(name = "conjuro")
-public class Conjuro {
+public class Conjuro implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,5 +1,9 @@
 package com.example.model;
 
+import java.io.Serializable;
+
+import com.example.controller.ConMago;
+
 import jakarta.persistence.*;
 
 /**
@@ -8,7 +12,7 @@ import jakarta.persistence.*;
  */
 @Entity
 @Table(name = "monstruo")
-public class Monstruo {
+public class Monstruo implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -131,5 +135,6 @@ public class Monstruo {
      */
     public void atacar(Mago m) {
         m.vida -= getFuerza();
+        ConMago.modificarVida(m, m.vida);
     }
 }

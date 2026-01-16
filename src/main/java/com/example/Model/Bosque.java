@@ -1,5 +1,6 @@
 package com.example.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import jakarta.persistence.*;
 
@@ -9,7 +10,7 @@ import jakarta.persistence.*;
  */
 @Entity
 @Table(name = "bosque")
-public class Bosque {
+public class Bosque implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
